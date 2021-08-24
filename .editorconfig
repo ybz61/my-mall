@@ -1,0 +1,21 @@
+root = true                          # 根目录的配置文件，编辑器会由当前目录向上查找，如果找到 `roor = true` 的文件，则不再查找
+
+[*]                                  # 匹配所有的文件
+charset = utf-8                      # 文件编码 设置字符集是 utf-8
+indent_style = space                 # 缩进风格，可选"space"、"tab" 这里space为空格缩进
+indent_size = 2                      # 缩进空格为2个
+end_of_line = lf                     # 结尾换行符，可选"lf"、"cr"、"crlf" 行尾序列
+insert_final_newline = true          # 在文件结尾插入新行
+trim_trailing_whitespace = true      # 删除一行中的前后空格
+curly_bracket_next_line = false      # 大括号不另起一行
+spaces_around_operators = true       # 运算符两边都有空格
+indent_brace_style = 1tbs            # 条件语句格式是 1tbs
+
+[*.js]                               # 对所有的 js 文件生效
+quote_type = single                  # 字符串使用单引号
+
+[*.{html,less,css,json}]             # 对所有 html, less, css, json 文件生效
+quote_type = double                  # 字符串使用双引号
+
+[package.json]                       # 对 package.json 生效
+indent_size = 2                      # 使用2个空格缩进

@@ -1,27 +1,54 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
+/* 路由懒加载 */
+const Home = () => import('../views/home/Home.vue')
+const Category = () => import('../views/category/Category.vue')
+const Shopcart = () => import('../views/shopcart/Shopcart.vue')
+const Profile = () => import('../views/profile/Profile.vue')
+const Detail = () => import('../views/detail/Detail.vue')
+
+/* 1 安装插件 */
 Vue.use(VueRouter)
 
+/* 2 创建 router 实例对象 */
+/* 2.1 配置映射关系 */
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: '',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/category',
+    component: Category
+  },
+  {
+    path: '/shopcart',
+    component: Shopcart
+  },
+  {
+    path: '/profile',
+    component: Profile
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 })
 
+/* 3 导出router */
 export default router
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
