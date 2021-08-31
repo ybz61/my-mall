@@ -16,6 +16,12 @@ export default {
       type: Number,
       default: 0
     },
+    // data: {
+    //   type: Array,
+    //   default: () => {
+    //     return [];
+    //   }
+    // },
     pullUpLoad: {
       type: Boolean,
       default: false

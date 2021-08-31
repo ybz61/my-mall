@@ -1,21 +1,20 @@
 <template>
-  <div>
-    <nav-bar>
-      <div slot="left" @click="backClick" class="back">
-        <img src="~assets/img/common/back.svg" alt />
+  <nav-bar>
+    <div slot="left" @click="backClick" class="back">
+      <img src="~assets/img/common/back.svg" alt />
+    </div>
+    <div class="title" slot="center">
+      <div
+        class="title-item"
+        v-for="(item, index) in titleInfos"
+        :key="index"
+        @click="itemClick(index)"
+        :class="{ active: index === currentIndex }"
+      >
+        {{ item }}
       </div>
-      <div class="title" slot="center">
-        <div
-          class="title-item"
-          v-for="(item, index) in titles"
-          @click="itemClick(index)"
-          :class="{ active: index === currentIndex }"
-        >
-          {{ item }}
-        </div>
-      </div>
-    </nav-bar>
-  </div>
+    </div>
+  </nav-bar>
 </template>
 
 <script>
@@ -24,9 +23,21 @@ import NavBar from "components/common/navbar/NavBar";
 export default {
   name: "DetailNavBar",
   components: { NavBar },
+  // props: {
+  //   titleInfos: {
+  //     type: Array,
+  //     default: () => {
+  //       return ["商品", "参数", "评论", "推荐"];
+  //     }
+  //   },
+  //   currentIndex: {
+  //     type: Number,
+  //     default: 0
+  //   }
+  // },
   data() {
     return {
-      titles: ["商品", "参数", "评论", "推荐"],
+      titleInfos: ["商品", "参数", "评论", "推荐"],
       currentIndex: 0
     };
   },
@@ -36,12 +47,9 @@ export default {
     },
     itemClick(index) {
       this.currentIndex = index;
+      this.$emit("itemClick", index);
     }
-  },
-  // 生命周期 - 创建完成（访问当前this实例）
-  created() {},
-  // 生命周期 - 挂载完成（访问DOM元素）
-  mounted() {}
+  }
 };
 </script>
 

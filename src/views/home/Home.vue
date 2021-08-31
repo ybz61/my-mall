@@ -18,18 +18,21 @@
       :pull-up-load="true"
       @pullingUp="loadMore"
     >
-      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
-      <recommend-view :recommends="recommends" />
-      <feature-view />
+      <home-swiper
+        :banners="banners"
+        @swiperImageLoad="swiperImageLoad"
+      ></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
       <tab-control
         :titles="['流行', '新款', '精选']"
         @tabClick="tabClick"
         ref="tabControl2"
-      />
-      <goods-list :goods="showGoods" />
+      ></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
     </scroll>
 
-    <back-top @click.native="backClick" v-show="isShowBackTop" />
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -48,6 +51,8 @@ import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import { debounce } from "common/utils";
+import { itemListenerMixin } from "common/mixin";
+import { BACKTOP_DISTANCE } from "common/const";
 
 export default {
   name: "Home",
@@ -61,6 +66,8 @@ export default {
     Scroll,
     BackTop
   },
+  // 混入
+  mixins: [itemListenerMixin],
   data() {
     return {
       // result: null
@@ -96,13 +103,15 @@ export default {
   // 生命周期 - 挂载完成（访问DOM元素）
   mounted() {
     // 1.监听item中的图片加载完成
-    const refresh = debounce(this.$refs.scroll.refresh);
-    this.$bus.$on("itemImageLoad", () => {
-      // 在mounted生命周期函数中使用 this.$refs.scroll而不是created中
-      // this.$refs.scroll.refresh();
-      refresh();
-    });
-
+    // img标签虽然已经被挂载，但其中图片还没有占据高度
+    // this.$refs.scroll.refresh 对这个函数进行防抖操作
+    // const refresh = debounce(this.$refs.scroll.refresh);
+    // this.itemImgListener = () => {
+    //   // 在mounted生命周期函数中使用 this.$refs.scroll而不是created中
+    //   // this.$refs.scroll.refresh();
+    //   refresh();
+    // };
+    // this.$bus.$on("itemImageLoad", this.itemImgListener);
     // 2.获取tabControl的offsetTop
     // 所有的组件都有一个属性 $el：用于获取组件中的元素
     // console.log(this.$refs.tabControl);   /* 取到组件VueComponent {_uid: 18, _isVue: true, $options: {…}, _renderProxy: Proxy, _self: VueComponent, …} */
@@ -115,13 +124,19 @@ export default {
     console.log("home destroyed");
   },
   activated() {
+    // 设置离开时的位置
     // console.log("activated");
     this.$refs.scroll.scrollTo(0, this.saveY, 0);
     this.$refs.scroll.refresh();
   },
   deactivated() {
+    // 记录离开时的位置
     // console.log("deactivated");
+    // 1 保存Y值
     this.saveY = this.$refs.scroll.getScrollY();
+
+    // 2 取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   methods: {
     /* 
@@ -150,7 +165,7 @@ export default {
     contentScroll(position) {
       // console.log(position);
       // 1.判断BackTop是否显示
-      this.isShowBackTop = -position.y >= 1000;
+      this.isShowBackTop = -position.y >= BACKTOP_DISTANCE;
       // 2.决定tabControl是否吸顶(position：fixed)
       this.isTabFixed = -position.y >= this.tabOffsetTop;
     },
