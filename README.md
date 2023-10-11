@@ -1,4 +1,4 @@
-# bz-mall
+# my-mall
 
 ## Project setup
 ```
